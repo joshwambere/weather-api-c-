@@ -15,19 +15,18 @@ public class WeatherService
 
     public async Task<List<WeatherData>> GetMultiCityWeatherData(List<City> cities )
     {
-        List<WeatherData> weatherData = new();
-        
-        foreach (var city in cities)
-        {
-            Console.WriteLine(_appSettings.OpenWeatherMapApiKey);
-            var result = await _httpService.Send<WeatherData>(_appSettings.OpenWeatherMapApiUrl,
-                _appSettings.OpenWeatherMapApiKey, city);
-            if (result!=null)
-            {
-                weatherData.Add(result);
-            }
-        }
+      
 
-        return weatherData;
+        List<Task<WeatherData?>> tasks = cities.Select( city =>
+        {
+            return  _httpService.Send<WeatherData>(_appSettings.OpenWeatherMapApiUrl,
+                _appSettings.OpenWeatherMapApiKey, city);
+            
+            
+        }).ToList();
+
+        WeatherData?[] weatherData = await Task.WhenAll(tasks);
+
+        return weatherData.ToList();
     }
 }
