@@ -19,7 +19,7 @@ public class WeatherService
         
         foreach (var city in cities)
         {
-            Console.WriteLine(_appSettings.OpenWeatherMapApiKey);
+           
             var result = await _httpService.Send<WeatherData>(_appSettings.OpenWeatherMapApiUrl,
                 _appSettings.OpenWeatherMapApiKey, city);
             if (result!=null)
